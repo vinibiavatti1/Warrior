@@ -1,4 +1,4 @@
-# Warrior Game
+# Warrior - Jogo de Estratégia Gerencial
 Criado por: Vinícius Reif Biavatti
 
 ## Como Funciona
