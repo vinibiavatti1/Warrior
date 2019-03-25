@@ -28,3 +28,8 @@ Automação|Criação automática de edifícios ou unidades.
 Salvar|Salvamento automático do jogo em ambiente local.
 
 ## Imagens
+![Warrior - Construções](https://uploaddeimagens.com.br/images/001/988/110/original/1a.png?1553530155 "Construções")
+![Warrior - Cidade](https://uploaddeimagens.com.br/images/001/988/112/original/2a.png?1553530180 "Cidade")
+![Warrior - Mensagens](https://uploaddeimagens.com.br/images/001/988/113/original/3.png?1553530213 "Mensagens")
+![Warrior - Produção](https://uploaddeimagens.com.br/images/001/988/114/original/4.png?1553530227 "Produção")
+![Warrior - Automação](https://uploaddeimagens.com.br/images/001/988/115/original/5.png?1553530241 "Automação")
