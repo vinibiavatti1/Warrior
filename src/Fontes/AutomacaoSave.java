@@ -12,7 +12,7 @@ import java.util.Date;
  *
  * @author vinicius.reif
  */
-public class AutomacaoSave implements Runnable
+public class AutomacaoSave extends Automacao
 {
     private JanelaPrincipal jp;
     private BancoDeDados bd;
@@ -28,7 +28,9 @@ public class AutomacaoSave implements Runnable
     @Override
     public void run()
     {
-        this.jp.txtSaidaSave.setText("Iniciado processo automatico de salvamento\n" + this.jp.txtSaidaSave.getText());
+        if(this.jp.isLogSaveHabilitado()) {
+            this.jp.txtSaidaSave.setText("Iniciado processo automatico de salvamento\n" + this.jp.txtSaidaSave.getText());
+        }
         while(loop)
         {
             try
@@ -38,7 +40,9 @@ public class AutomacaoSave implements Runnable
                 os.writeObject(this.bd);
                 os.flush();
                 os.close();
-                this.jp.txtSaidaSave.setText(new Date() + " Jogo salvo com sucesso!\n" + this.jp.txtSaidaSave.getText());
+                if(this.jp.isLogSaveHabilitado()) {
+                    this.jp.txtSaidaSave.setText(new Date() + " Jogo salvo com sucesso!\n" + this.jp.txtSaidaSave.getText());
+                }
                 
                 Thread.sleep(((int)(jp.spTempoSave.getValue()) * 1000));
             } 
@@ -53,7 +57,9 @@ public class AutomacaoSave implements Runnable
                 this.jp.pararSave();
             }
         }
-        this.jp.txtSaidaSave.setText("Processo de salvamento encerrado!\n" + this.jp.txtSaidaSave.getText());
+        if(this.jp.isLogSaveHabilitado()) {
+            this.jp.txtSaidaSave.setText("Processo de salvamento encerrado!\n" + this.jp.txtSaidaSave.getText());
+        }
     }
 
     public void parar()

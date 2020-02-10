@@ -18,7 +18,7 @@ public class CentroDistribuicao extends Construcao
     public void construir()
     {
         this.getBd().addArmazem(3200);
-        if(this.getBd().getConstrucao(this.getId()) != null)
+        if(this.getBd().construcaoConstruida(this.getId()))
         {
             return;
         }

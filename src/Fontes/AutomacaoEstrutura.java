@@ -9,7 +9,7 @@ import java.util.logging.Logger;
  *
  * @author vinicius.reif
  */
-public class AutomacaoEstrutura implements Runnable
+public class AutomacaoEstrutura extends Automacao
 {
     private JanelaPrincipal jp;
     private BancoDeDados bd;
@@ -27,18 +27,24 @@ public class AutomacaoEstrutura implements Runnable
     @Override
     public void run()
     {
-        jp.txtSaida.setText("Automação da estrutura " + this.bd.getConstrucaoCatalogo(idEstrutura).getNome() + " iniciada!\n" + jp.txtSaida.getText());
+        if(this.jp.isLogHabilitado()) {
+            jp.txtSaida.setText("Automação da estrutura " + this.bd.getConstrucaoCatalogo(idEstrutura).getNome() + " iniciada!\n" + jp.txtSaida.getText());
+        }
         while(loop)
         {
             try
             {
                 if(bd.construir(idEstrutura))
                 {
-                    jp.txtSaida.setText("Estrutura " + this.bd.getConstrucaoCatalogo(idEstrutura).getNome() + " criada!\n" + jp.txtSaida.getText());
+                    if(this.jp.isLogHabilitado()) {
+                        jp.txtSaida.setText(makeLogText("Estrutura " + this.bd.getConstrucaoCatalogo(idEstrutura).getNome() + " criada!\n" + jp.txtSaida.getText()));
+                    }
                 }
                 else
                 {
-                    jp.txtSaida.setText("Estrutura " + this.bd.getConstrucaoCatalogo(idEstrutura).getNome() + " não criada. Recursos insuficientes!\n" + jp.txtSaida.getText());
+                    if(this.jp.isLogHabilitado()) {
+                        jp.txtSaida.setText(makeLogText("Estrutura " + this.bd.getConstrucaoCatalogo(idEstrutura).getNome() + " não criada. Recursos insuficientes!\n" + jp.txtSaida.getText()));
+                    }
                 }
                 
                 Thread.sleep(((int)(jp.spTempo.getValue()) * 1000));
@@ -48,9 +54,11 @@ public class AutomacaoEstrutura implements Runnable
                 Msg.erro("Erro ao automatizar Estrutura\n" + ex);
             }
         }
-        jp.txtSaida.setText("Automação da estrutura " + this.bd.getConstrucaoCatalogo(idEstrutura).getNome() + " encerrada!\n" + jp.txtSaida.getText());
+        if(this.jp.isLogHabilitado()) {
+            jp.txtSaida.setText("Automação da estrutura " + this.bd.getConstrucaoCatalogo(idEstrutura).getNome() + " encerrada!\n" + jp.txtSaida.getText());
+        }
     }
-    
+
     public void parar()
     {
         this.loop = false;

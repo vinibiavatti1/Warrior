@@ -1,7 +1,6 @@
 package Fontes;
 
 import Janelas.Intro;
-import Janelas.JanelaPrincipal;
 import Outros.Msg;
 import javax.swing.UIManager;
 

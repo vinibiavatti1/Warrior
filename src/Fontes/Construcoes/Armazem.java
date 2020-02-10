@@ -18,7 +18,7 @@ public class Armazem extends Construcao
     public void construir()
     {
         this.getBd().addArmazem(500);
-        if(this.getBd().getConstrucao(this.getId()) != null)
+        if(this.getBd().construcaoConstruida(this.getId()))
         {
             return;
         }

@@ -7,9 +7,10 @@ import Fontes.Construcoes.Madeireira;
 import Fontes.Construcoes.MinaDeOuro;
 import Fontes.Construcoes.Pedreira;
 import Fontes.Unidades.Unidade;
-import Janelas.DialogoRecursos;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Classe serializável
@@ -21,10 +22,10 @@ public class BancoDeDados implements Serializable
     public static final boolean DEBUG = false;
     
     //Listas
-    private ArrayList<Construcao> listaCatalogoConstrucao = new ArrayList<>();
-    private ArrayList<Construcao> listaConstrucao = new ArrayList<>();
-    private ArrayList<Unidade> listaCatalogoUnidade = new ArrayList<>();
-    private ArrayList<Unidade> listaUnidade = new ArrayList<>();
+    private CopyOnWriteArrayList<Construcao> listaCatalogoConstrucao = new CopyOnWriteArrayList<>();
+    private ConcurrentHashMap<Integer, Integer> listaConstrucao = new ConcurrentHashMap<>();
+    private CopyOnWriteArrayList<Unidade> listaCatalogoUnidade = new CopyOnWriteArrayList<>();
+    private ConcurrentHashMap<Integer, Integer> listaUnidade = new ConcurrentHashMap<>();
     
     //Recursos
     private int ouro = 1000;
@@ -71,57 +72,33 @@ public class BancoDeDados implements Serializable
         this.listaCatalogoConstrucao.add(new Fazenda(this));
         this.listaCatalogoConstrucao.add(new Armazem(this));
         
-        this.listaConstrucao.add(new MinaDeOuro(this));
-        this.listaConstrucao.add(new Pedreira(this));
-        this.listaConstrucao.add(new Madeireira(this));
-        this.listaConstrucao.add(new Fazenda(this));
+        this.listaConstrucao.put(new MinaDeOuro(this).getId(), 1);
+        this.listaConstrucao.put(new Pedreira(this).getId(), 1);
+        this.listaConstrucao.put(new Madeireira(this).getId(), 1);
+        this.listaConstrucao.put(new Fazenda(this).getId(), 1);
     }
 
     //Metodos
-    public ArrayList<Construcao> getListaCatalogoConstrucao()
+    public CopyOnWriteArrayList<Construcao> getListaCatalogoConstrucao()
     {
         return listaCatalogoConstrucao;
     }
 
-    public void setListaCatalogoConstrucao(ArrayList<Construcao> listaCatalogoConstrucao)
+    public void setListaCatalogoConstrucao(CopyOnWriteArrayList<Construcao> listaCatalogoConstrucao)
     {
         this.listaCatalogoConstrucao = listaCatalogoConstrucao;
     }
 
-    public ArrayList<Construcao> getListaConstrucao()
+    public ConcurrentHashMap<Integer, Integer> getListaConstrucao()
     {
         return listaConstrucao;
     }
 
-    public void setListaConstrucao(ArrayList<Construcao> listaConstrucao)
+    public void setListaConstrucao(ConcurrentHashMap<Integer, Integer> listaConstrucao)
     {
         this.listaConstrucao = listaConstrucao;
     }
-    
-    public Construcao getConstrucao(int id)
-    {
-        for(Construcao c : this.getListaConstrucao())
-        {
-            if(c.getId() == id)
-            {
-                return c;
-            }
-        }
-        return null;
-    }
-    
-    public Construcao getConstrucao(String nome)
-    {
-        for(Construcao c : this.getListaConstrucao())
-        {
-            if(c.getNome().equals(nome))
-            {
-                return c;
-            }
-        }
-        return null;
-    }
-    
+
     public Construcao getConstrucaoCatalogo(int id)
     {
         for(Construcao c : this.getListaCatalogoConstrucao())
@@ -148,9 +125,15 @@ public class BancoDeDados implements Serializable
     
     public void chamarAcaoContrucoes()
     {
-        for(Construcao c : this.getListaConstrucao())
-        {
-            c.acao();
+        for (Map.Entry<Integer, Integer> entry : this.getListaConstrucao().entrySet()) {
+            Integer id = entry.getKey();
+            Integer amount = entry.getValue();
+            Construcao construcao = getConstrucaoCatalogo(id);
+            if(construcao != null) {
+                for(int i = 0; i < amount; i++) {
+                    construcao.acao();
+                }
+            }
         }
     }
     
@@ -168,15 +151,11 @@ public class BancoDeDados implements Serializable
     
     public int getQtdConstrucao(int id)
     {
-        int qtd = 0;
-        for(Construcao c : this.getListaConstrucao())
-        {
-            if(c.getId() == id)
-            {
-                qtd++;
-            }
+        Integer amount = this.getListaConstrucao().get(id);
+        if(amount == null) {
+            return 0;
         }
-        return qtd;
+        return amount;
     }
     
     public boolean compararPrecoConstrucao(int id)
@@ -207,8 +186,19 @@ public class BancoDeDados implements Serializable
     
     public boolean construcaoConstruida(int id)
     {
-        Construcao c = this.getConstrucao(id);
-        return c != null;
+        return this.getListaConstrucao().get(id) != null;
+    }
+    
+    public boolean construcaoConstruida(String name)
+    {
+        for (Map.Entry<Integer, Integer> entry : this.getListaConstrucao().entrySet()) {
+            Integer id = entry.getKey();
+            Construcao c = this.getConstrucaoCatalogo(id);
+            if(c.getNome().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public void limparUnidades()
@@ -216,11 +206,13 @@ public class BancoDeDados implements Serializable
         this.listaUnidade.clear();
     }
     
-    public boolean criar(int id)
+    public synchronized boolean criar(int id)
     {
         if(this.compararPrecoUnidade(id))
         {
-            this.listaUnidade.add(this.getUnidadeCatalogo(id));
+            Integer amount = this.listaUnidade.get(id);
+            if(amount == null) amount = 0;
+            this.listaUnidade.put(id, amount + 1);
             this.ouro -= this.getUnidadeCatalogo(id).getOuro();
             this.madeira -= this.getUnidadeCatalogo(id).getMadeira();
             this.pedra -= this.getUnidadeCatalogo(id).getPedra();
@@ -231,12 +223,15 @@ public class BancoDeDados implements Serializable
         return false;
     }
     
-    public boolean construir(int id)
+    public synchronized boolean construir(int id)
     {
         if(this.compararPrecoConstrucao(id))
         {
             this.getConstrucaoCatalogo(id).construir();
-            this.listaConstrucao.add(this.getConstrucaoCatalogo(id));
+            
+            Integer amount = this.listaConstrucao.get(id);
+            if(amount == null) amount = 0;
+            this.listaConstrucao.put(id, amount + 1);
             this.ouro -= this.getConstrucaoCatalogo(id).getOuro();
             this.madeira -= this.getConstrucaoCatalogo(id).getMadeira();
             this.pedra -= this.getConstrucaoCatalogo(id).getPedra();
@@ -419,22 +414,22 @@ public class BancoDeDados implements Serializable
         this.nome = nome;
     }
 
-    public ArrayList<Unidade> getListaCatalogoUnidade()
+    public CopyOnWriteArrayList<Unidade> getListaCatalogoUnidade()
     {
         return listaCatalogoUnidade;
     }
 
-    public void setListaCatalogoUnidade(ArrayList<Unidade> listaCatalogoUnidade)
+    public void setListaCatalogoUnidade(CopyOnWriteArrayList<Unidade> listaCatalogoUnidade)
     {
         this.listaCatalogoUnidade = listaCatalogoUnidade;
     }
 
-    public ArrayList<Unidade> getListaUnidade()
+    public ConcurrentHashMap<Integer, Integer> getListaUnidade()
     {
         return listaUnidade;
     }
 
-    public void setListaUnidade(ArrayList<Unidade> listaUnidade)
+    public void setListaUnidade(ConcurrentHashMap<Integer, Integer> listaUnidade)
     {
         this.listaUnidade = listaUnidade;
     }

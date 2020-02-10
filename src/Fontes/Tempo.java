@@ -4,14 +4,8 @@ import Fontes.Construcoes.Construcao;
 import Fontes.Unidades.Unidade;
 import Janelas.JanelaPrincipal;
 import Outros.Msg;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.Map;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -62,6 +56,9 @@ public class Tempo implements Runnable
                 
                 //Ataque
                 this.ataque();
+                
+                // Memory
+                this.jp.calcMemory();
             } 
             catch (InterruptedException ex)
             {
@@ -84,16 +81,20 @@ public class Tempo implements Runnable
             
             String msg = "RESULTADO DA EXPLORAÇÃO\nCidade: " + this.bd.getNome() + "\n\n";
             msg += "CONSTRUÇÕES:\n";
-            for(Construcao c : this.bd.getListaConstrucao())
-            {
-                msg += c.getNome() + "\n";
+            for (Map.Entry<Integer, Integer> entry : this.bd.getListaConstrucao().entrySet()) {
+                Integer id = entry.getKey();
+                Integer amount = entry.getValue();
+                Construcao c = this.bd.getConstrucaoCatalogo(id);
+                msg += c.getNome() + " (" + amount + ")\n";
             }
             msg += "\n";
             
             msg += "UNIDADES:\n";
-            for(Unidade u : this.bd.getListaUnidade())
-            {
-                msg += u.getNome() + "\n";
+            for (Map.Entry<Integer, Integer> entry : this.bd.getListaUnidade().entrySet()) {
+                Integer id = entry.getKey();
+                Integer amount = entry.getValue();
+                Unidade u = this.bd.getUnidadeCatalogo(id);
+                msg += u.getNome() + " (" + amount + ")\n";
             }
             msg += "\n";
             

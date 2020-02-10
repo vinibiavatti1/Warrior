@@ -18,7 +18,7 @@ public class Universidade extends Construcao
     @Override
     public void construir()
     {
-        if(this.getBd().getConstrucao(this.getId()) != null)
+        if(this.getBd().construcaoConstruida(this.getId()))
         {
             return;
         }

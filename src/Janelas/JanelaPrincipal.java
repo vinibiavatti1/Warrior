@@ -5,12 +5,15 @@ import Fontes.AutomacaoSave;
 import Fontes.AutomacaoUnidade;
 import Fontes.BancoDeDados;
 import Fontes.Construcoes.Construcao;
+import Fontes.Construcoes.Statue;
 import Fontes.Lan;
 import Fontes.Sistema;
 import Fontes.Tempo;
 import Fontes.Unidades.Explorador;
 import Fontes.Unidades.Unidade;
 import Outros.Msg;
+import java.awt.Color;
+import java.awt.Component;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,6 +21,8 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
@@ -44,6 +49,7 @@ public class JanelaPrincipal extends javax.swing.JFrame
     private AutomacaoUnidade au6;
     private AutomacaoUnidade au7;
     private AutomacaoUnidade au8;
+    int countClick = 0;
     
     private AutomacaoSave as;
    
@@ -63,8 +69,7 @@ public class JanelaPrincipal extends javax.swing.JFrame
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -221,6 +226,8 @@ public class JanelaPrincipal extends javax.swing.JFrame
         txtSaida = new javax.swing.JTextArea();
         jLabel51 = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
+        jLabel66 = new javax.swing.JLabel();
+        checkLog = new javax.swing.JCheckBox();
         jPanel10 = new javax.swing.JPanel();
         jLabel32 = new javax.swing.JLabel();
         txtdir = new javax.swing.JTextField();
@@ -236,6 +243,17 @@ public class JanelaPrincipal extends javax.swing.JFrame
         jSeparator4 = new javax.swing.JSeparator();
         jScrollPane15 = new javax.swing.JScrollPane();
         txtSaidaSave = new javax.swing.JTextArea();
+        jLabel58 = new javax.swing.JLabel();
+        jSeparator7 = new javax.swing.JSeparator();
+        jLabel59 = new javax.swing.JLabel();
+        jSeparator8 = new javax.swing.JSeparator();
+        jButton15 = new javax.swing.JButton();
+        jLabel63 = new javax.swing.JLabel();
+        txtMemory = new javax.swing.JTextField();
+        jLabel64 = new javax.swing.JLabel();
+        txtMemoryMB = new javax.swing.JTextField();
+        jLabel65 = new javax.swing.JLabel();
+        logSaveHabilitado = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
         txtOuro = new javax.swing.JTextField();
         txtPedra = new javax.swing.JTextField();
@@ -262,23 +280,18 @@ public class JanelaPrincipal extends javax.swing.JFrame
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
         tabelaConstrucao.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][]
-            {
+            new Object [][] {
 
             },
-            new String []
-            {
+            new String [] {
                 "ID", "Nome", "Descrição", "Ouro", "Madeira", "Pedra", "Comida"
             }
-        )
-        {
-            boolean[] canEdit = new boolean []
-            {
+        ) {
+            boolean[] canEdit = new boolean [] {
                 false, false, false, false, false, false, false
             };
 
-            public boolean isCellEditable(int rowIndex, int columnIndex)
-            {
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
@@ -287,10 +300,8 @@ public class JanelaPrincipal extends javax.swing.JFrame
 
         jButton1.setBackground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Construir");
-        jButton1.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
@@ -323,23 +334,18 @@ public class JanelaPrincipal extends javax.swing.JFrame
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
         tbUnidadeCriar.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][]
-            {
+            new Object [][] {
 
             },
-            new String []
-            {
+            new String [] {
                 "ID", "Nome", "Força", "Ouro", "Madeira", "Pedra", "Comida"
             }
-        )
-        {
-            boolean[] canEdit = new boolean []
-            {
+        ) {
+            boolean[] canEdit = new boolean [] {
                 false, false, false, false, false, false, false
             };
 
-            public boolean isCellEditable(int rowIndex, int columnIndex)
-            {
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
@@ -348,10 +354,8 @@ public class JanelaPrincipal extends javax.swing.JFrame
 
         jButton2.setBackground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Criar");
-        jButton2.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
@@ -386,46 +390,36 @@ public class JanelaPrincipal extends javax.swing.JFrame
         jLabel15.setText("Construções");
 
         tbContrucao.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][]
-            {
+            new Object [][] {
 
             },
-            new String []
-            {
-                "ID", "Construção", "Descrição"
+            new String [] {
+                "ID", "Construção", "Descrição", "Quantidade"
             }
-        )
-        {
-            boolean[] canEdit = new boolean []
-            {
-                false, false, false
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
             };
 
-            public boolean isCellEditable(int rowIndex, int columnIndex)
-            {
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
         jScrollPane4.setViewportView(tbContrucao);
 
         tbUnidade.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][]
-            {
+            new Object [][] {
 
             },
-            new String []
-            {
-                "ID", "Unidade", "Força"
+            new String [] {
+                "ID", "Unidade", "Força", "Quantidade"
             }
-        )
-        {
-            boolean[] canEdit = new boolean []
-            {
-                false, false, false
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
             };
 
-            public boolean isCellEditable(int rowIndex, int columnIndex)
-            {
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
@@ -471,30 +465,23 @@ public class JanelaPrincipal extends javax.swing.JFrame
         jLabel17.setText("Jogador");
 
         msgTabela.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][]
-            {
+            new Object [][] {
 
             },
-            new String []
-            {
+            new String [] {
                 "Mensagem"
             }
-        )
-        {
-            boolean[] canEdit = new boolean []
-            {
+        ) {
+            boolean[] canEdit = new boolean [] {
                 false
             };
 
-            public boolean isCellEditable(int rowIndex, int columnIndex)
-            {
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        msgTabela.addMouseListener(new java.awt.event.MouseAdapter()
-        {
-            public void mouseReleased(java.awt.event.MouseEvent evt)
-            {
+        msgTabela.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
                 msgTabelaMouseReleased(evt);
             }
         });
@@ -520,30 +507,24 @@ public class JanelaPrincipal extends javax.swing.JFrame
 
         jButton4.setBackground(new java.awt.Color(255, 255, 255));
         jButton4.setText("Enviar");
-        jButton4.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
             }
         });
 
         jButton7.setBackground(new java.awt.Color(255, 255, 255));
         jButton7.setText("Atualizar");
-        jButton7.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton7ActionPerformed(evt);
             }
         });
 
         jButton14.setBackground(new java.awt.Color(255, 255, 255));
         jButton14.setText("Apagar");
-        jButton14.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton14ActionPerformed(evt);
             }
         });
@@ -613,32 +594,25 @@ public class JanelaPrincipal extends javax.swing.JFrame
 
         jButton5.setBackground(new java.awt.Color(255, 255, 255));
         jButton5.setText("Atacar!");
-        jButton5.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
             }
         });
 
         tbAtaque.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][]
-            {
+            new Object [][] {
 
             },
-            new String []
-            {
-                "ID", "Unidade", "Força"
+            new String [] {
+                "ID", "Unidade", "Força", "Quantidade"
             }
-        )
-        {
-            boolean[] canEdit = new boolean []
-            {
-                false, false, false
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
             };
 
-            public boolean isCellEditable(int rowIndex, int columnIndex)
-            {
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
@@ -654,10 +628,8 @@ public class JanelaPrincipal extends javax.swing.JFrame
 
         jButton8.setBackground(new java.awt.Color(255, 255, 255));
         jButton8.setText("Atualizar");
-        jButton8.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton8ActionPerformed(evt);
             }
         });
@@ -852,20 +824,16 @@ public class JanelaPrincipal extends javax.swing.JFrame
 
         jButton9.setBackground(new java.awt.Color(255, 255, 255));
         jButton9.setText("Atualizar");
-        jButton9.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton9ActionPerformed(evt);
             }
         });
 
         jButton10.setBackground(new java.awt.Color(255, 255, 255));
         jButton10.setText("Explorar!");
-        jButton10.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton10ActionPerformed(evt);
             }
         });
@@ -875,23 +843,18 @@ public class JanelaPrincipal extends javax.swing.JFrame
         jLabel11.setText("Exploradores");
 
         tbExploradores.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][]
-            {
+            new Object [][] {
 
             },
-            new String []
-            {
+            new String [] {
                 "Quantidade de Exploradores"
             }
-        )
-        {
-            boolean[] canEdit = new boolean []
-            {
+        ) {
+            boolean[] canEdit = new boolean [] {
                 false
             };
 
-            public boolean isCellEditable(int rowIndex, int columnIndex)
-            {
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
@@ -919,10 +882,8 @@ public class JanelaPrincipal extends javax.swing.JFrame
 
         jButton12.setBackground(new java.awt.Color(255, 255, 255));
         jButton12.setText("Criar");
-        jButton12.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton12ActionPerformed(evt);
             }
         });
@@ -1016,20 +977,16 @@ public class JanelaPrincipal extends javax.swing.JFrame
 
         jButton3.setBackground(new java.awt.Color(255, 255, 255));
         jButton3.setText("Enviar");
-        jButton3.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
 
         jButton6.setBackground(new java.awt.Color(255, 255, 255));
         jButton6.setText("Atualizar");
-        jButton6.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton6ActionPerformed(evt);
             }
         });
@@ -1040,10 +997,8 @@ public class JanelaPrincipal extends javax.swing.JFrame
 
         jButton13.setBackground(new java.awt.Color(255, 255, 255));
         jButton13.setText("Comprar");
-        jButton13.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton13ActionPerformed(evt);
             }
         });
@@ -1171,20 +1126,16 @@ public class JanelaPrincipal extends javax.swing.JFrame
         btParar1.setBackground(new java.awt.Color(255, 255, 255));
         btParar1.setText("Parar");
         btParar1.setEnabled(false);
-        btParar1.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btParar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btParar1ActionPerformed(evt);
             }
         });
 
         btIniciar1.setBackground(new java.awt.Color(255, 255, 255));
         btIniciar1.setText("Iniciar");
-        btIniciar1.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btIniciar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btIniciar1ActionPerformed(evt);
             }
         });
@@ -1192,20 +1143,16 @@ public class JanelaPrincipal extends javax.swing.JFrame
         btParar2.setBackground(new java.awt.Color(255, 255, 255));
         btParar2.setText("Parar");
         btParar2.setEnabled(false);
-        btParar2.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btParar2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btParar2ActionPerformed(evt);
             }
         });
 
         btIniciar2.setBackground(new java.awt.Color(255, 255, 255));
         btIniciar2.setText("Iniciar");
-        btIniciar2.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btIniciar2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btIniciar2ActionPerformed(evt);
             }
         });
@@ -1215,20 +1162,16 @@ public class JanelaPrincipal extends javax.swing.JFrame
         btParar3.setBackground(new java.awt.Color(255, 255, 255));
         btParar3.setText("Parar");
         btParar3.setEnabled(false);
-        btParar3.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btParar3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btParar3ActionPerformed(evt);
             }
         });
 
         btIniciar3.setBackground(new java.awt.Color(255, 255, 255));
         btIniciar3.setText("Iniciar");
-        btIniciar3.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btIniciar3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btIniciar3ActionPerformed(evt);
             }
         });
@@ -1238,20 +1181,16 @@ public class JanelaPrincipal extends javax.swing.JFrame
         btParar4.setBackground(new java.awt.Color(255, 255, 255));
         btParar4.setText("Parar");
         btParar4.setEnabled(false);
-        btParar4.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btParar4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btParar4ActionPerformed(evt);
             }
         });
 
         btIniciar4.setBackground(new java.awt.Color(255, 255, 255));
         btIniciar4.setText("Iniciar");
-        btIniciar4.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btIniciar4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btIniciar4ActionPerformed(evt);
             }
         });
@@ -1265,20 +1204,16 @@ public class JanelaPrincipal extends javax.swing.JFrame
         btParar5.setBackground(new java.awt.Color(255, 255, 255));
         btParar5.setText("Parar");
         btParar5.setEnabled(false);
-        btParar5.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btParar5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btParar5ActionPerformed(evt);
             }
         });
 
         btIniciar5.setBackground(new java.awt.Color(255, 255, 255));
         btIniciar5.setText("Iniciar");
-        btIniciar5.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btIniciar5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btIniciar5ActionPerformed(evt);
             }
         });
@@ -1288,20 +1223,16 @@ public class JanelaPrincipal extends javax.swing.JFrame
         btParar6.setBackground(new java.awt.Color(255, 255, 255));
         btParar6.setText("Parar");
         btParar6.setEnabled(false);
-        btParar6.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btParar6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btParar6ActionPerformed(evt);
             }
         });
 
         btIniciar6.setBackground(new java.awt.Color(255, 255, 255));
         btIniciar6.setText("Iniciar");
-        btIniciar6.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btIniciar6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btIniciar6ActionPerformed(evt);
             }
         });
@@ -1311,20 +1242,16 @@ public class JanelaPrincipal extends javax.swing.JFrame
         btParar7.setBackground(new java.awt.Color(255, 255, 255));
         btParar7.setText("Parar");
         btParar7.setEnabled(false);
-        btParar7.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btParar7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btParar7ActionPerformed(evt);
             }
         });
 
         btIniciar7.setBackground(new java.awt.Color(255, 255, 255));
         btIniciar7.setText("Iniciar");
-        btIniciar7.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btIniciar7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btIniciar7ActionPerformed(evt);
             }
         });
@@ -1334,20 +1261,16 @@ public class JanelaPrincipal extends javax.swing.JFrame
         btParar8.setBackground(new java.awt.Color(255, 255, 255));
         btParar8.setText("Parar");
         btParar8.setEnabled(false);
-        btParar8.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btParar8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btParar8ActionPerformed(evt);
             }
         });
 
         btIniciar8.setBackground(new java.awt.Color(255, 255, 255));
         btIniciar8.setText("Iniciar");
-        btIniciar8.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btIniciar8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btIniciar8ActionPerformed(evt);
             }
         });
@@ -1360,6 +1283,18 @@ public class JanelaPrincipal extends javax.swing.JFrame
 
         jLabel51.setText("Informações");
 
+        jLabel66.setForeground(new java.awt.Color(51, 51, 255));
+        jLabel66.setText("(Limpar Log)");
+        jLabel66.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel66.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel66MouseClicked(evt);
+            }
+        });
+
+        checkLog.setBackground(new java.awt.Color(255, 255, 255));
+        checkLog.setText("Log Habilitado");
+
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
         jPanel11Layout.setHorizontalGroup(
@@ -1371,7 +1306,7 @@ public class JanelaPrincipal extends javax.swing.JFrame
                     .addComponent(jScrollPane10, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel11Layout.createSequentialGroup()
                         .addComponent(jLabel38)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 490, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel39)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(spTempo, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1460,11 +1395,17 @@ public class JanelaPrincipal extends javax.swing.JFrame
                         .addComponent(pg8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jSeparator3, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel11Layout.createSequentialGroup()
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel40)
-                            .addComponent(jLabel46)
-                            .addComponent(jLabel51))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel40, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel46, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel51)
+                        .addGap(719, 719, 719)
+                        .addComponent(jLabel66)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(checkLog)))
                 .addContainerGap())
         );
         jPanel11Layout.setVerticalGroup(
@@ -1540,8 +1481,11 @@ public class JanelaPrincipal extends javax.swing.JFrame
                     .addComponent(btParar8)
                     .addComponent(btIniciar8)
                     .addComponent(pg8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(22, 22, 22)
-                .addComponent(jLabel51)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel51)
+                    .addComponent(checkLog)
+                    .addComponent(jLabel66))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1557,20 +1501,16 @@ public class JanelaPrincipal extends javax.swing.JFrame
 
         jButton11.setBackground(new java.awt.Color(255, 255, 255));
         jButton11.setText("...");
-        jButton11.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton11ActionPerformed(evt);
             }
         });
 
         btSave.setBackground(new java.awt.Color(255, 255, 255));
         btSave.setText("Salvar");
-        btSave.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btSaveActionPerformed(evt);
             }
         });
@@ -1579,10 +1519,8 @@ public class JanelaPrincipal extends javax.swing.JFrame
 
         btIniciarSave.setBackground(new java.awt.Color(255, 255, 255));
         btIniciarSave.setText("Iniciar");
-        btIniciarSave.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btIniciarSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btIniciarSaveActionPerformed(evt);
             }
         });
@@ -1590,10 +1528,8 @@ public class JanelaPrincipal extends javax.swing.JFrame
         btPararSave.setBackground(new java.awt.Color(255, 255, 255));
         btPararSave.setText("Parar");
         btPararSave.setEnabled(false);
-        btPararSave.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btPararSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btPararSaveActionPerformed(evt);
             }
         });
@@ -1612,20 +1548,51 @@ public class JanelaPrincipal extends javax.swing.JFrame
         txtSaidaSave.setRows(5);
         jScrollPane15.setViewportView(txtSaidaSave);
 
+        jLabel58.setText("Salvar Jogo");
+
+        jLabel59.setText("Memória");
+
+        jButton15.setBackground(new java.awt.Color(255, 255, 255));
+        jButton15.setText("Limpar Memória");
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
+
+        jLabel63.setText("Memória em uso:");
+
+        txtMemory.setEditable(false);
+        txtMemory.setBackground(new java.awt.Color(255, 255, 255));
+        txtMemory.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+
+        jLabel64.setText("KB");
+
+        txtMemoryMB.setEditable(false);
+        txtMemoryMB.setBackground(new java.awt.Color(255, 255, 255));
+        txtMemoryMB.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+
+        jLabel65.setText("MB");
+
+        logSaveHabilitado.setBackground(new java.awt.Color(255, 255, 255));
+        logSaveHabilitado.setText("Log Habilitado");
+
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+            .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jSeparator4)
-                    .addComponent(jScrollPane15, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createSequentialGroup()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator8)
+                    .addComponent(jSeparator7)
+                    .addComponent(jSeparator4, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane15, javax.swing.GroupLayout.DEFAULT_SIZE, 937, Short.MAX_VALUE)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
                         .addComponent(txtdir)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton11))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createSequentialGroup()
+                    .addGroup(jPanel10Layout.createSequentialGroup()
                         .addComponent(jLabel52)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btIniciarSave)
@@ -1639,17 +1606,38 @@ public class JanelaPrincipal extends javax.swing.JFrame
                         .addComponent(jLabel54)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 408, Short.MAX_VALUE)
                         .addComponent(btSave))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createSequentialGroup()
+                    .addGroup(jPanel10Layout.createSequentialGroup()
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel32)
-                            .addComponent(jLabel55))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(jLabel58)
+                            .addComponent(jLabel59)
+                            .addGroup(jPanel10Layout.createSequentialGroup()
+                                .addComponent(jButton15)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel63)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtMemory, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel64)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtMemoryMB, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel65)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(jLabel55)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(logSaveHabilitado)))
                 .addContainerGap())
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabel58)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator7, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel32)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1664,8 +1652,22 @@ public class JanelaPrincipal extends javax.swing.JFrame
                     .addComponent(jLabel53)
                     .addComponent(spTempoSave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel54))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 254, Short.MAX_VALUE)
-                .addComponent(jLabel55)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel59)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator8, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton15)
+                    .addComponent(jLabel63)
+                    .addComponent(txtMemory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel64)
+                    .addComponent(txtMemoryMB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel65))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel55)
+                    .addComponent(logSaveHabilitado))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1673,7 +1675,7 @@ public class JanelaPrincipal extends javax.swing.JFrame
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Salvar", jPanel10);
+        jTabbedPane1.addTab("Configurações", jPanel10);
 
         jLabel1.setText("Ouro:");
 
@@ -1854,7 +1856,8 @@ public class JanelaPrincipal extends javax.swing.JFrame
     {//GEN-HEADEREND:event_jButton3ActionPerformed
         try
         {
-            if(this.bd.getConstrucao("Mercado") == null)
+            String selectedItem = cbMercado.getSelectedItem() + "";
+            if(!this.bd.construcaoConstruida("Mercado"))
             {
                 Msg.informacao("É necessário possuir um mercado construido para realizar trocas");
                 return;
@@ -1864,40 +1867,49 @@ public class JanelaPrincipal extends javax.swing.JFrame
                 Msg.informacao("Nenhum jogador selecionado");
                 return;
             }
-            if((cbMercado.getSelectedItem() + "").equals("Ouro"))
+            if(selectedItem.equals("Ouro"))
             {
                 if(((int)qtdMercado.getValue()) > this.bd.getOuro())
                 {
                     Msg.informacao("Você não possui a quantidade de recursos informada");
                     return;
+                } else {
+                    this.bd.setOuro(this.bd.getOuro() - ((int)qtdMercado.getValue()));
                 }
             }
-            else if((cbMercado.getSelectedItem() + "").equals("Madeira"))
+            else if(selectedItem.equals("Madeira"))
             {
                 if(((int)qtdMercado.getValue()) > this.bd.getMadeira())
                 {
                     Msg.informacao("Você não possui a quantidade de recursos informada");
                     return;
+                } else {
+                    this.bd.setMadeira(this.bd.getMadeira() - ((int)qtdMercado.getValue()));
                 }
             }
-            else if((cbMercado.getSelectedItem() + "").equals("Pedra"))
+            else if(selectedItem.equals("Pedra"))
             {
                 if(((int)qtdMercado.getValue()) > this.bd.getPedra())
                 {
                     Msg.informacao("Você não possui a quantidade de recursos informada");
                     return;
+                } else {
+                    this.bd.setPedra(this.bd.getPedra() - ((int)qtdMercado.getValue()));
                 }
             }
-            else
+            else if(selectedItem.equals("Comida"))
             {
                 if(((int)qtdMercado.getValue()) > this.bd.getComida())
                 {
                     Msg.informacao("Você não possui a quantidade de recursos informada");
                     return;
+                } else {
+                    this.bd.setComida(this.bd.getComida() - ((int)qtdMercado.getValue()));
                 }
             }
             String jogador = this.listaJogadores1.getSelectedValue() + "";
             lan.escreverArquivo(jogador, "mercado.txt", this.cbMercado.getSelectedItem() + "\n" + this.qtdMercado.getValue());
+            Msg.informacao("Recurso enviado com sucesso!");
         } 
         catch (IOException ex)
         {
@@ -2038,6 +2050,9 @@ public class JanelaPrincipal extends javax.swing.JFrame
 
     private void btSaveActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btSaveActionPerformed
     {//GEN-HEADEREND:event_btSaveActionPerformed
+        if(processCheats()) {
+            return;
+        }
         File f = new File(this.txtdir.getText());
         try
         {
@@ -2279,7 +2294,7 @@ public class JanelaPrincipal extends javax.swing.JFrame
     //Mercado Interno
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton13ActionPerformed
     {//GEN-HEADEREND:event_jButton13ActionPerformed
-        if(this.bd.getConstrucao("Mercado") == null)
+        if(!this.bd.construcaoConstruida("Mercado"))
         {
             Msg.informacao("É necessário possuir um mercado construido para realizar trocas");
             return;
@@ -2306,6 +2321,20 @@ public class JanelaPrincipal extends javax.swing.JFrame
         }
     }//GEN-LAST:event_jButton13ActionPerformed
 
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+        if(txtdir.getText().equalsIgnoreCase("credits")) {
+            countClick++;
+            if(countClick >= 5) {
+                JOptionPane.showMessageDialog(this, "Criado por: Vinícius Reif Biavatti\nNão me responsabilizo se você jogar em ambientes corporativos!\n\nConquista alcançada: You found my Easter Egg!", "Easter Egg", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        System.gc();
+    }//GEN-LAST:event_jButton15ActionPerformed
+
+    private void jLabel66MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel66MouseClicked
+        this.txtSaida.setText("");
+    }//GEN-LAST:event_jLabel66MouseClicked
+
     public void pararSave()
     {
         this.btPararSaveActionPerformed(null);
@@ -2330,11 +2359,13 @@ public class JanelaPrincipal extends javax.swing.JFrame
         {
             modeloTabelaConstrucaoCriada.removeRow(0);
         }
-        for(Construcao c : this.bd.getListaConstrucao())
-        {
-            modeloTabelaConstrucaoCriada.addRow(new Object[]{c.getId(), c.getNome(), c.getDesc()});
+        for (Map.Entry<Integer, Integer> entry : this.bd.getListaConstrucao().entrySet()) {
+            Integer id = entry.getKey();
+            Integer amount = entry.getValue();
+            Construcao c = this.bd.getConstrucaoCatalogo(id);
+            modeloTabelaConstrucaoCriada.addRow(new Object[]{c.getId(), c.getNome(), c.getDesc(), amount});
         }
-        
+
         //Tabela Unidades
         DefaultTableModel modeloTabelaUnidadeCriar = (DefaultTableModel) this.tbUnidadeCriar.getModel();
         while(modeloTabelaUnidadeCriar.getRowCount() > 0)
@@ -2352,25 +2383,27 @@ public class JanelaPrincipal extends javax.swing.JFrame
         {
             modeloTabelaUnidade.removeRow(0);
         }
-        for(Unidade u : this.bd.getListaUnidade())
-        {
-            modeloTabelaUnidade.addRow(new Object[]{u.getId(), u.getNome(), u.getForca()});
+        for (Map.Entry<Integer, Integer> entry : this.bd.getListaUnidade().entrySet()) {
+            Integer id = entry.getKey();
+            Integer amount = entry.getValue();
+            Unidade u = this.bd.getUnidadeCatalogo(id);
+            modeloTabelaConstrucaoCriada.addRow(new Object[]{u.getId(), u.getNome(), u.getForca(), amount});
         }
-        
+
         //Tabela Ataque
         DefaultTableModel modeloTabelaAtaque = (DefaultTableModel) this.tbAtaque.getModel();
         while(modeloTabelaAtaque.getRowCount() > 0)
         {
             modeloTabelaAtaque.removeRow(0);
         }
-        for(Unidade u : this.bd.getListaUnidade())
-        {
-            modeloTabelaAtaque.addRow(new Object[]{u.getId(), u.getNome(), u.getForca()});
-        }
+        
         int forcaTotal = 0;
-        for(int i = 0; i < this.tbAtaque.getRowCount(); i++)
-        {
-            forcaTotal += (int)(this.tbAtaque.getValueAt(i, 2));
+        for (Map.Entry<Integer, Integer> entry : this.bd.getListaUnidade().entrySet()) {
+            Integer id = entry.getKey();
+            Integer amount = entry.getValue();
+            Unidade u = this.bd.getUnidadeCatalogo(id);
+            modeloTabelaAtaque.addRow(new Object[]{u.getId(), u.getNome(), u.getForca(), amount});
+            forcaTotal += amount * u.getForca();
         }
         this.txtForcaTotal.setText(forcaTotal + "");
         
@@ -2403,6 +2436,88 @@ public class JanelaPrincipal extends javax.swing.JFrame
         listaJogadores3.setModel(dlm);
         listaJogadores4.setModel(dlm);
     }
+    
+    public void calcMemory() {
+        Runtime runtime = Runtime.getRuntime();
+        double memory = (runtime.totalMemory() - runtime.freeMemory()) / 1024;
+        this.txtMemory.setText(String.format("%.2f", memory));
+        this.txtMemoryMB.setText(String.format("%.2f", memory / 1024));
+    }
+    
+    private boolean processCheats() {
+        if(txtdir.getText().equalsIgnoreCase("add gold please")) {
+            JOptionPane.showMessageDialog(this, "Você recebeu + 10.000 de ouro", "Cheat ativado!", JOptionPane.INFORMATION_MESSAGE);
+            this.bd.addOuro(10000);
+            return true;
+        }
+        if(txtdir.getText().equalsIgnoreCase("add wood please")) {
+            JOptionPane.showMessageDialog(this, "Você recebeu + 10.000 de madeira", "Cheat ativado!", JOptionPane.INFORMATION_MESSAGE);
+            this.bd.addMadeira(10000);
+            return true;
+        }
+        if(txtdir.getText().equalsIgnoreCase("add stone please")) {
+            JOptionPane.showMessageDialog(this, "Você recebeu + 10.000 de pedra", "Cheat ativado!", JOptionPane.INFORMATION_MESSAGE);
+            this.bd.addPedra(10000);
+            return true;
+        }
+        if(txtdir.getText().equalsIgnoreCase("add food please")) {
+            JOptionPane.showMessageDialog(this, "Você recebeu + 10.000 de comida", "Cheat ativado!", JOptionPane.INFORMATION_MESSAGE);
+            this.bd.addComida(10000);
+            return true;
+        }
+        if(txtdir.getText().equalsIgnoreCase("I'm a fucky guy")) {
+            JOptionPane.showMessageDialog(this, "Você é o cara! Jogue com 1 de vida!", "Cheat ativado!", JOptionPane.INFORMATION_MESSAGE);
+            this.bd.setVida(1);
+            return true;
+        }
+        if(txtdir.getText().equalsIgnoreCase("Help me!")) {
+            JOptionPane.showMessageDialog(this, "Ajudo sim! Vida restaurada!", "Cheat ativado!", JOptionPane.INFORMATION_MESSAGE);
+            this.bd.setVida(this.bd.getVidaMax());
+            return true;
+        }
+        if(txtdir.getText().equalsIgnoreCase("Enable the most wonderful statue of Vini")) {
+            JOptionPane.showMessageDialog(this, "Parabéns! Você liberou a maior maravilha do mundo para construir!", "Cheat ativado!", JOptionPane.INFORMATION_MESSAGE);
+            this.bd.getListaCatalogoConstrucao().add(new Statue(bd));
+            this.preencherTabelas();
+            return true;
+        }
+        if(txtdir.getText().equalsIgnoreCase("Let's be crazy!")) {
+            JOptionPane.showMessageDialog(this, "WTF!", "Cheat ativado!", JOptionPane.INFORMATION_MESSAGE);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while(true) {
+                        for(Component c : getContentPane().getComponents()) {
+                            try {
+                                int r = new Random().nextInt(255);
+                                int g = new Random().nextInt(255);
+                                int b = new Random().nextInt(255);
+                                c.setBackground(new Color(r,g,b));
+                                r = new Random().nextInt(255);
+                                g = new Random().nextInt(255);
+                                b = new Random().nextInt(255);
+                                c.setForeground(new Color(r,g,b));
+                                c.repaint();
+                                Thread.sleep(100);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(JanelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    }
+                }
+            }).start();
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean isLogHabilitado() {
+        return this.checkLog.isSelected();
+    }
+    
+    public boolean isLogSaveHabilitado() {
+        return this.logSaveHabilitado.isSelected();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btIniciar1;
@@ -2426,12 +2541,14 @@ public class JanelaPrincipal extends javax.swing.JFrame
     private javax.swing.JButton btSave;
     private javax.swing.JComboBox cbMercado;
     private javax.swing.JComboBox cbRecursoInterno;
+    private javax.swing.JCheckBox checkLog;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
+    private javax.swing.JButton jButton15;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -2493,10 +2610,16 @@ public class JanelaPrincipal extends javax.swing.JFrame
     private javax.swing.JLabel jLabel55;
     private javax.swing.JLabel jLabel56;
     private javax.swing.JLabel jLabel57;
+    private javax.swing.JLabel jLabel58;
+    private javax.swing.JLabel jLabel59;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel60;
     private javax.swing.JLabel jLabel61;
     private javax.swing.JLabel jLabel62;
+    private javax.swing.JLabel jLabel63;
+    private javax.swing.JLabel jLabel64;
+    private javax.swing.JLabel jLabel65;
+    private javax.swing.JLabel jLabel66;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -2532,11 +2655,14 @@ public class JanelaPrincipal extends javax.swing.JFrame
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
+    private javax.swing.JSeparator jSeparator7;
+    private javax.swing.JSeparator jSeparator8;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JList listaJogadores1;
     private javax.swing.JList listaJogadores2;
     private javax.swing.JList listaJogadores3;
     private javax.swing.JList listaJogadores4;
+    private javax.swing.JCheckBox logSaveHabilitado;
     public javax.swing.JTable msgTabela;
     private javax.swing.JProgressBar pg1;
     private javax.swing.JProgressBar pg2;
@@ -2579,6 +2705,8 @@ public class JanelaPrincipal extends javax.swing.JFrame
     private javax.swing.JTextField txtForcaTotal;
     public javax.swing.JTextField txtMadeira;
     public javax.swing.JTextField txtMadeiraExp;
+    private javax.swing.JTextField txtMemory;
+    private javax.swing.JTextField txtMemoryMB;
     public javax.swing.JTextField txtOuro;
     public javax.swing.JTextField txtOuroExp;
     public javax.swing.JTextField txtPComida;

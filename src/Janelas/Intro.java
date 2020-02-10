@@ -25,6 +25,11 @@ public class Intro extends javax.swing.JFrame
     {
         initComponents();
         
+        readDefaultServerFile();
+        readDefaultLifeFile();
+    }
+    
+    private void readDefaultServerFile() {
         File f = new File("ServidorPadrao.txt");
         try
         {
@@ -50,11 +55,36 @@ public class Intro extends javax.swing.JFrame
             Msg.erro("Erro ao criar arquivo servidorPadrao.txt\n" + ex);
         }
     }
+    
+    private void readDefaultLifeFile() {
+        File f = new File("VidaPadrao.txt");
+        try
+        {
+            if(!f.exists())
+            {
+                f.createNewFile();
+            }
+            Scanner s = new Scanner(f);
+            String txt = "";
+            while(s.hasNext())
+            {
+                txt += s.nextLine();
+            }
+            if(!txt.equals(""))
+            {
+                this.txtVida.setValue(Integer.parseInt(txt));
+                this.txtVida.setEnabled(false);
+            }
+        } 
+        catch (IOException ex)
+        {
+            Msg.erro("Erro ao criar arquivo vidaPadrao.txt\n" + ex);
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -112,24 +142,20 @@ public class Intro extends javax.swing.JFrame
 
         btPesqDir.setBackground(new java.awt.Color(255, 255, 255));
         btPesqDir.setText("...");
-        btPesqDir.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        btPesqDir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btPesqDirActionPerformed(evt);
             }
         });
 
         jLabel4.setText("Vida Inicial:");
 
-        txtVida.setModel(new javax.swing.SpinnerNumberModel(1000, 100, 9999999, 1));
+        txtVida.setModel(new javax.swing.SpinnerNumberModel(10000, 100, 9999999, 1));
 
         jButton2.setBackground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Iniciar");
-        jButton2.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
@@ -188,20 +214,16 @@ public class Intro extends javax.swing.JFrame
 
         jButton3.setBackground(new java.awt.Color(255, 255, 255));
         jButton3.setText("...");
-        jButton3.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
 
         jButton4.setBackground(new java.awt.Color(255, 255, 255));
         jButton4.setText("Carregar");
-        jButton4.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
             }
         });

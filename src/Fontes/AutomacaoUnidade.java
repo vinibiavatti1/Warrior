@@ -2,14 +2,12 @@ package Fontes;
 
 import Janelas.JanelaPrincipal;
 import Outros.Msg;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author vinicius.reif
  */
-public class AutomacaoUnidade implements Runnable
+public class AutomacaoUnidade extends Automacao
 {
     private JanelaPrincipal jp;
     private BancoDeDados bd;
@@ -27,18 +25,24 @@ public class AutomacaoUnidade implements Runnable
     @Override
     public void run()
     {
-        jp.txtSaida.setText("Automação da unidade " + this.bd.getUnidadeCatalogo(idUnidade).getNome() + " iniciada!\n" + jp.txtSaida.getText());
+        if(this.jp.isLogHabilitado()) {
+            jp.txtSaida.setText("Automação da unidade " + this.bd.getUnidadeCatalogo(idUnidade).getNome() + " iniciada!\n" + jp.txtSaida.getText());
+        }
         while(loop)
         {
             try
             {
                 if(bd.criar(idUnidade))
                 {
-                    jp.txtSaida.setText("Unidade " + this.bd.getUnidadeCatalogo(idUnidade).getNome() + " criada!\n" + jp.txtSaida.getText());
+                    if(this.jp.isLogHabilitado()) {
+                        jp.txtSaida.setText(makeLogText("Unidade " + this.bd.getUnidadeCatalogo(idUnidade).getNome() + " criada!\n" + jp.txtSaida.getText()));
+                    }
                 }
                 else
                 {
-                    jp.txtSaida.setText("Unidade " + this.bd.getUnidadeCatalogo(idUnidade).getNome() + " não criada. Recursos insuficientes!\n"  + jp.txtSaida.getText());
+                    if(this.jp.isLogHabilitado()) {
+                        jp.txtSaida.setText(makeLogText("Unidade " + this.bd.getUnidadeCatalogo(idUnidade).getNome() + " não criada. Recursos insuficientes!\n"  + jp.txtSaida.getText()));
+                    }
                 }
                 
                 Thread.sleep(((int)(jp.spTempo.getValue()) * 1000));
@@ -48,7 +52,9 @@ public class AutomacaoUnidade implements Runnable
                 Msg.erro("Erro ao automatizar Unidade\n" + ex);
             }
         }
-        jp.txtSaida.setText("Automação da unidade " + this.bd.getUnidadeCatalogo(idUnidade).getNome() + " encerrada!\n" + jp.txtSaida.getText());
+        if(this.jp.isLogHabilitado()) {
+            jp.txtSaida.setText("Automação da unidade " + this.bd.getUnidadeCatalogo(idUnidade).getNome() + " encerrada!\n" + jp.txtSaida.getText());
+        }
     }
     
     public void parar()
